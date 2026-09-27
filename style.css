@@ -1061,24 +1061,11 @@ footer a {
   }
 }
 
-/* =========================================
-   VERCEL BLINK FIX — FINAL OVERRIDE
-========================================= */
-.typing-cursor {
-  display: inline-block !important;
-  opacity: 1;
-  animation: cursorBlink 0.7s steps(1, end) infinite !important;
-  will-change: opacity;
-}
-
-@keyframes cursorBlink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-  46%,
-  100% {
-    opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+  #typingRole,
+  .typing-cursor,
+  .back-to-top {
+    animation: none;
   }
 }
 
@@ -1212,7 +1199,11 @@ footer a {
 
   border-color: var(--accent);
 
-  background: linear-gradient(145deg, #14212c, #101820);
+  background: linear-gradient(
+    145deg,
+    #14212c,
+    #101820
+  );
 
   box-shadow:
     0 0 0 1px rgba(97, 218, 251, 0.16),
@@ -1254,28 +1245,4 @@ footer a {
     border-color: var(--line);
   }
 }
-/* FINAL VERCEL CURSOR BLINK FIX */
 
-.typing-cursor {
-  display: inline-block !important;
-  width: 2px;
-  height: 0.95em;
-  margin-left: 8px;
-  background: var(--accent);
-  opacity: 1;
-
-  animation: cursorBlink 0.7s steps(1, end) infinite !important;
-  will-change: opacity;
-}
-
-@keyframes cursorBlink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-
-  46%,
-  100% {
-    opacity: 0;
-  }
-}

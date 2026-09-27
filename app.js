@@ -1,241 +1,236 @@
 /* =========================================
-   PORTFOLIO APP
-   VERCEL-SAFE VERSION
+   PORTFOLIO APP.JS
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  /* =========================================
-     MOBILE MENU
-  ========================================= */
+(function () {
+  "use strict";
 
-  const menu = document.getElementById("menu");
-  const nav = document.getElementById("nav");
+  function initPortfolio() {
+    /* =========================================
+       MOBILE MENU
+    ========================================= */
 
-  if (menu && nav) {
-    menu.addEventListener("click", () => {
-      nav.classList.toggle("open");
-    });
+    const menu = document.getElementById("menu");
+    const nav = document.getElementById("nav");
 
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("open");
+    if (menu && nav) {
+      menu.addEventListener("click", function () {
+        nav.classList.toggle("open");
       });
-    });
-  }
 
-  /* =========================================
-     CURRENT YEAR
-  ========================================= */
-
-  const year = document.getElementById("year");
-
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
-
-  /* =========================================
-     ACTIVE NAVIGATION
-  ========================================= */
-
-  const links = Array.from(document.querySelectorAll('nav a[href^="#"]'));
-
-  const sections = links
-    .map((link) => {
-      const target = link.getAttribute("href");
-
-      if (!target || target === "#") {
-        return null;
-      }
-
-      return document.querySelector(target);
-    })
-    .filter(Boolean);
-
-  if ("IntersectionObserver" in window && sections.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
-
-          links.forEach((link) => {
-            link.classList.toggle(
-              "active",
-              link.getAttribute("href") === `#${entry.target.id}`,
-            );
-          });
+      nav.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          nav.classList.remove("open");
         });
-      },
-      {
-        rootMargin: "-35% 0px -55% 0px",
-        threshold: 0,
-      },
+      });
+    }
+
+
+    /* =========================================
+       CURRENT YEAR
+    ========================================= */
+
+    const year = document.getElementById("year");
+
+    if (year) {
+      year.textContent = new Date().getFullYear();
+    }
+
+
+    /* =========================================
+       ACTIVE NAVIGATION
+    ========================================= */
+
+    const links = Array.from(
+      document.querySelectorAll('nav a[href^="#"]')
     );
 
-    sections.forEach((section) => {
-      observer.observe(section);
-    });
-  }
+    const sections = links
+      .map(function (a) {
+        const target = a.getAttribute("href");
 
-  /* =========================================
-     PROJECT CARD SELECTION
-  ========================================= */
+        if (!target || target === "#") {
+          return null;
+        }
 
-  const projectCards = Array.from(document.querySelectorAll(".project-card"));
+        return document.querySelector(target);
+      })
+      .filter(Boolean);
 
-  function toggleProject(card) {
-    const alreadySelected = card.classList.contains("selected");
 
-    projectCards.forEach((item) => {
-      item.classList.remove("selected");
-      item.setAttribute("aria-pressed", "false");
-    });
+    if (
+      "IntersectionObserver" in window &&
+      sections.length > 0
+    ) {
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) {
+              return;
+            }
 
-    if (!alreadySelected) {
-      card.classList.add("selected");
-      card.setAttribute("aria-pressed", "true");
+            links.forEach(function (a) {
+              a.classList.toggle(
+                "active",
+                a.getAttribute("href") ===
+                  "#" + entry.target.id
+              );
+            });
+          });
+        },
+        {
+          rootMargin: "-35% 0px -55% 0px",
+          threshold: 0,
+        }
+      );
+
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
     }
-  }
 
-  projectCards.forEach((card) => {
-    /* Mouse / Touch */
-    card.addEventListener("click", (event) => {
-      /*
-       * External / Play Store link par click hua
-       * to card selection trigger nahi hoga.
-       */
-      if (event.target.closest("a")) {
-        return;
+
+    /* =========================================
+       PROJECT CARD SELECTION
+    ========================================= */
+
+    const projectCards = Array.from(
+      document.querySelectorAll(".project-card")
+    );
+
+    function toggleProject(card) {
+      const alreadySelected =
+        card.classList.contains("selected");
+
+      projectCards.forEach(function (item) {
+        item.classList.remove("selected");
+        item.setAttribute("aria-pressed", "false");
+      });
+
+      if (!alreadySelected) {
+        card.classList.add("selected");
+        card.setAttribute("aria-pressed", "true");
       }
+    }
 
-      toggleProject(card);
-    });
+    projectCards.forEach(function (card) {
+      card.addEventListener("click", function (event) {
+        if (event.target.closest("a")) {
+          return;
+        }
 
-    /* Keyboard */
-    card.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
         toggleProject(card);
-      }
+      });
+
+      card.addEventListener("keydown", function (event) {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+          toggleProject(card);
+        }
+      });
     });
-  });
 
-  /* =========================================
-     HERO ROLE TYPING ANIMATION
-  ========================================= */
 
-  const typingRole = document.getElementById("typingRole");
+    /* =========================================
+       HERO ROLE TYPING ANIMATION
+    ========================================= */
 
-  if (!typingRole) {
-    console.warn("Typing animation: #typingRole not found.");
+    const typingRole =
+      document.getElementById("typingRole");
 
-    return;
-  }
+    if (!typingRole) {
+      console.warn(
+        "Typing animation: #typingRole element not found."
+      );
+      return;
+    }
 
-  /*
-   * Roles
-   */
-  const roles = ["React Native Developer", "Mobile Application Developer"];
+    const roles = [
+      "React Native Developer",
+      "Mobile Application Developer",
+    ];
 
-  /*
-   * Animation state
-   */
-  let roleIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
 
-  /*
-   * Animation speed
-   */
-  const TYPE_SPEED = 90;
-  const DELETE_SPEED = 55;
+    const TYPE_SPEED = 90;
+    const DELETE_SPEED = 55;
+    const HOLD_TIME = 1800;
+    const NEXT_ROLE_DELAY = 500;
 
-  /*
-   * Full role visible hone ka time
-   */
-  const HOLD_TIME = 1800;
+    function typeRole() {
+      const currentRole = roles[roleIndex];
 
-  /*
-   * Next role start hone se pehle
-   */
-  const NEXT_ROLE_DELAY = 500;
+      if (!isDeleting) {
+        charIndex++;
 
-  /* =========================================
-     TYPE / DELETE FUNCTION
-  ========================================= */
+        typingRole.textContent =
+          currentRole.substring(0, charIndex);
 
-  function typeRole() {
-    const currentRole = roles[roleIndex];
+        if (charIndex >= currentRole.length) {
+          charIndex = currentRole.length;
+          isDeleting = true;
 
-    /* =====================================
-       TYPING
-    ===================================== */
+          window.setTimeout(
+            typeRole,
+            HOLD_TIME
+          );
 
-    if (!isDeleting) {
-      typingRole.textContent = currentRole.substring(0, charIndex + 1);
+          return;
+        }
 
-      charIndex++;
-
-      /*
-       * Full text type ho gaya
-       */
-      if (charIndex >= currentRole.length) {
-        charIndex = currentRole.length;
-
-        isDeleting = true;
-
-        /*
-         * Full text ko screen par hold karo
-         */
-        window.setTimeout(typeRole, HOLD_TIME);
+        window.setTimeout(
+          typeRole,
+          TYPE_SPEED
+        );
 
         return;
       }
 
-      /*
-       * Next character
-       */
-      window.setTimeout(typeRole, TYPE_SPEED);
+      charIndex--;
 
-      return;
+      typingRole.textContent =
+        currentRole.substring(0, charIndex);
+
+      if (charIndex <= 0) {
+        charIndex = 0;
+        isDeleting = false;
+
+        roleIndex =
+          (roleIndex + 1) % roles.length;
+
+        window.setTimeout(
+          typeRole,
+          NEXT_ROLE_DELAY
+        );
+
+        return;
+      }
+
+      window.setTimeout(
+        typeRole,
+        DELETE_SPEED
+      );
     }
 
-    /* =====================================
-       DELETING
-    ===================================== */
-
-    charIndex--;
-
-    typingRole.textContent = currentRole.substring(0, charIndex);
-
-    /*
-     * Full text delete ho gaya
-     */
-    if (charIndex <= 0) {
-      charIndex = 0;
-
-      isDeleting = false;
-
-      /*
-       * Next role
-       */
-      roleIndex = (roleIndex + 1) % roles.length;
-
-      window.setTimeout(typeRole, NEXT_ROLE_DELAY);
-
-      return;
-    }
-
-    /*
-     * Next character delete
-     */
-    window.setTimeout(typeRole, DELETE_SPEED);
+    typeRole();
   }
 
+
   /* =========================================
-     START TYPING ANIMATION
+     WAIT FOR DOM
   ========================================= */
 
-  typeRole();
-});
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initPortfolio
+    );
+  } else {
+    initPortfolio();
+  }
+})();
