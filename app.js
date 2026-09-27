@@ -1,155 +1,169 @@
 /* =========================================
-   MOBILE MENU
+   PORTFOLIO APP
+   VERCEL-SAFE VERSION
 ========================================= */
 
-const menu = document.getElementById("menu");
-const nav = document.getElementById("nav");
+document.addEventListener("DOMContentLoaded", () => {
+  /* =========================================
+     MOBILE MENU
+  ========================================= */
 
-if (menu && nav) {
-  menu.addEventListener("click", () => {
-    nav.classList.toggle("open");
-  });
+  const menu = document.getElementById("menu");
+  const nav = document.getElementById("nav");
 
-  nav.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => {
-      nav.classList.remove("open");
+  if (menu && nav) {
+    menu.addEventListener("click", () => {
+      nav.classList.toggle("open");
     });
-  });
-}
 
-/* =========================================
-   CURRENT YEAR
-========================================= */
-
-const year = document.getElementById("year");
-
-if (year) {
-  year.textContent = new Date().getFullYear();
-}
-
-/* =========================================
-   ACTIVE NAVIGATION
-========================================= */
-
-const links = [...document.querySelectorAll('nav a[href^="#"]')];
-
-const sections = links
-  .map((a) => {
-    const target = a.getAttribute("href");
-
-    if (!target || target === "#") {
-      return null;
-    }
-
-    return document.querySelector(target);
-  })
-  .filter(Boolean);
-
-if ("IntersectionObserver" in window && sections.length > 0) {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          return;
-        }
-
-        links.forEach((a) => {
-          a.classList.toggle(
-            "active",
-            a.getAttribute("href") === `#${entry.target.id}`,
-          );
-        });
+    nav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        nav.classList.remove("open");
       });
-    },
-    {
-      rootMargin: "-35% 0px -55% 0px",
-      threshold: 0,
-    },
-  );
-
-  sections.forEach((section) => {
-    observer.observe(section);
-  });
-}
-
-/* =========================================
-   PROJECT CARD SELECTION
-========================================= */
-
-const projectCards = [...document.querySelectorAll(".project-card")];
-
-function toggleProject(card) {
-  const alreadySelected = card.classList.contains("selected");
-
-  projectCards.forEach((item) => {
-    item.classList.remove("selected");
-    item.setAttribute("aria-pressed", "false");
-  });
-
-  if (!alreadySelected) {
-    card.classList.add("selected");
-
-    card.setAttribute("aria-pressed", "true");
+    });
   }
-}
 
-projectCards.forEach((card) => {
-  /* Mouse / Touch */
-  card.addEventListener("click", (event) => {
-    /*
-     * Agar Play Store / external link
-     * click hua hai to card select mat karo.
-     */
-    if (event.target.closest("a")) {
-      return;
+  /* =========================================
+     CURRENT YEAR
+  ========================================= */
+
+  const year = document.getElementById("year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+  /* =========================================
+     ACTIVE NAVIGATION
+  ========================================= */
+
+  const links = Array.from(document.querySelectorAll('nav a[href^="#"]'));
+
+  const sections = links
+    .map((link) => {
+      const target = link.getAttribute("href");
+
+      if (!target || target === "#") {
+        return null;
+      }
+
+      return document.querySelector(target);
+    })
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && sections.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          links.forEach((link) => {
+            link.classList.toggle(
+              "active",
+              link.getAttribute("href") === `#${entry.target.id}`,
+            );
+          });
+        });
+      },
+      {
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: 0,
+      },
+    );
+
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+  }
+
+  /* =========================================
+     PROJECT CARD SELECTION
+  ========================================= */
+
+  const projectCards = Array.from(document.querySelectorAll(".project-card"));
+
+  function toggleProject(card) {
+    const alreadySelected = card.classList.contains("selected");
+
+    projectCards.forEach((item) => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
+
+    if (!alreadySelected) {
+      card.classList.add("selected");
+      card.setAttribute("aria-pressed", "true");
     }
+  }
 
-    toggleProject(card);
-  });
-
-  /* Keyboard */
-  card.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
+  projectCards.forEach((card) => {
+    /* Mouse / Touch */
+    card.addEventListener("click", (event) => {
+      /*
+       * External / Play Store link par click hua
+       * to card selection trigger nahi hoga.
+       */
+      if (event.target.closest("a")) {
+        return;
+      }
 
       toggleProject(card);
-    }
+    });
+
+    /* Keyboard */
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleProject(card);
+      }
+    });
   });
-});
 
-/* =========================================
-   HERO ROLE TYPING ANIMATION
-========================================= */
+  /* =========================================
+     HERO ROLE TYPING ANIMATION
+  ========================================= */
 
-(function () {
   const typingRole = document.getElementById("typingRole");
 
-  /*
-   * Important:
-   * Agar element HTML me nahi mila,
-   * to baaki JavaScript break nahi hogi.
-   */
   if (!typingRole) {
     console.warn("Typing animation: #typingRole not found.");
 
     return;
   }
 
+  /*
+   * Roles
+   */
   const roles = ["React Native Developer", "Mobile Application Developer"];
 
+  /*
+   * Animation state
+   */
   let roleIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
 
-  /* Animation speed */
+  /*
+   * Animation speed
+   */
   const TYPE_SPEED = 90;
   const DELETE_SPEED = 55;
 
-  /* Full text kitni der visible rahe */
+  /*
+   * Full role visible hone ka time
+   */
   const HOLD_TIME = 1800;
 
-  /* Next role start hone se pehle */
+  /*
+   * Next role start hone se pehle
+   */
   const NEXT_ROLE_DELAY = 500;
+
+  /* =========================================
+     TYPE / DELETE FUNCTION
+  ========================================= */
 
   function typeRole() {
     const currentRole = roles[roleIndex];
@@ -164,7 +178,7 @@ projectCards.forEach((card) => {
       charIndex++;
 
       /*
-       * Pura role type ho gaya
+       * Full text type ho gaya
        */
       if (charIndex >= currentRole.length) {
         charIndex = currentRole.length;
@@ -172,15 +186,17 @@ projectCards.forEach((card) => {
         isDeleting = true;
 
         /*
-         * Full text ko 1.8 sec
-         * screen par visible rakho.
+         * Full text ko screen par hold karo
          */
-        setTimeout(typeRole, HOLD_TIME);
+        window.setTimeout(typeRole, HOLD_TIME);
 
         return;
       }
 
-      setTimeout(typeRole, TYPE_SPEED);
+      /*
+       * Next character
+       */
+      window.setTimeout(typeRole, TYPE_SPEED);
 
       return;
     }
@@ -194,7 +210,7 @@ projectCards.forEach((card) => {
     typingRole.textContent = currentRole.substring(0, charIndex);
 
     /*
-     * Pura role delete ho gaya
+     * Full text delete ho gaya
      */
     if (charIndex <= 0) {
       charIndex = 0;
@@ -206,17 +222,20 @@ projectCards.forEach((card) => {
        */
       roleIndex = (roleIndex + 1) % roles.length;
 
-      setTimeout(typeRole, NEXT_ROLE_DELAY);
+      window.setTimeout(typeRole, NEXT_ROLE_DELAY);
 
       return;
     }
 
-    setTimeout(typeRole, DELETE_SPEED);
+    /*
+     * Next character delete
+     */
+    window.setTimeout(typeRole, DELETE_SPEED);
   }
 
-  /* =====================================
-     START ANIMATION
-  ===================================== */
+  /* =========================================
+     START TYPING ANIMATION
+  ========================================= */
 
   typeRole();
-})();
+});
