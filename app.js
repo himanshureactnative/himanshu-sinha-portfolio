@@ -1,37 +1,80 @@
+/* =========================================
+   MOBILE MENU
+========================================= */
+
 const menu = document.getElementById("menu");
 const nav = document.getElementById("nav");
-menu?.addEventListener("click", () => nav?.classList.toggle("open"));
-nav
-  ?.querySelectorAll("a")
-  .forEach((a) =>
-    a.addEventListener("click", () => nav?.classList.remove("open")),
-  );
+
+if (menu && nav) {
+  menu.addEventListener("click", () => {
+    nav.classList.toggle("open");
+  });
+
+  nav.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      nav.classList.remove("open");
+    });
+  });
+}
+
+/* =========================================
+   CURRENT YEAR
+========================================= */
 
 const year = document.getElementById("year");
-if (year) year.textContent = new Date().getFullYear();
+
+if (year) {
+  year.textContent = new Date().getFullYear();
+}
+
+/* =========================================
+   ACTIVE NAVIGATION
+========================================= */
 
 const links = [...document.querySelectorAll('nav a[href^="#"]')];
+
 const sections = links
-  .map((a) => document.querySelector(a.getAttribute("href")))
+  .map((a) => {
+    const target = a.getAttribute("href");
+
+    if (!target || target === "#") {
+      return null;
+    }
+
+    return document.querySelector(target);
+  })
   .filter(Boolean);
 
-if ("IntersectionObserver" in window) {
+if ("IntersectionObserver" in window && sections.length > 0) {
   const observer = new IntersectionObserver(
-    (entries) =>
+    (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          links.forEach((a) =>
-            a.classList.toggle(
-              "active",
-              a.getAttribute("href") === `#${entry.target.id}`,
-            ),
-          );
+        if (!entry.isIntersecting) {
+          return;
         }
-      }),
-    { rootMargin: "-35% 0px -55% 0px", threshold: 0 },
+
+        links.forEach((a) => {
+          a.classList.toggle(
+            "active",
+            a.getAttribute("href") === `#${entry.target.id}`,
+          );
+        });
+      });
+    },
+    {
+      rootMargin: "-35% 0px -55% 0px",
+      threshold: 0,
+    },
   );
-  sections.forEach((section) => observer.observe(section));
+
+  sections.forEach((section) => {
+    observer.observe(section);
+  });
 }
+
+/* =========================================
+   PROJECT CARD SELECTION
+========================================= */
 
 const projectCards = [...document.querySelectorAll(".project-card")];
 
@@ -45,68 +88,135 @@ function toggleProject(card) {
 
   if (!alreadySelected) {
     card.classList.add("selected");
+
     card.setAttribute("aria-pressed", "true");
   }
 }
 
 projectCards.forEach((card) => {
+  /* Mouse / Touch */
   card.addEventListener("click", (event) => {
-    if (event.target.closest("a")) return;
+    /*
+     * Agar Play Store / external link
+     * click hua hai to card select mat karo.
+     */
+    if (event.target.closest("a")) {
+      return;
+    }
+
     toggleProject(card);
   });
 
+  /* Keyboard */
   card.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
+
       toggleProject(card);
     }
   });
 });
-const roles = ["React Native Developer", "Mobile Application Developer"];
 
-const typingRole = document.getElementById("typingRole");
+/* =========================================
+   HERO ROLE TYPING ANIMATION
+========================================= */
 
-let roleIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
+(function () {
+  const typingRole = document.getElementById("typingRole");
 
-function typeRole() {
-  const currentRole = roles[roleIndex];
+  /*
+   * Important:
+   * Agar element HTML me nahi mila,
+   * to baaki JavaScript break nahi hogi.
+   */
+  if (!typingRole) {
+    console.warn("Typing animation: #typingRole not found.");
 
-  if (!isDeleting) {
-    // Typing
-    typingRole.textContent = currentRole.substring(0, charIndex + 1);
-    charIndex++;
+    return;
+  }
 
-    // Full word complete
-    if (charIndex === currentRole.length) {
-      isDeleting = true;
+  const roles = ["React Native Developer", "Mobile Application Developer"];
 
-      // Complete text ko thodi der visible rakho
-      setTimeout(typeRole, 1800);
+  let roleIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  /* Animation speed */
+  const TYPE_SPEED = 90;
+  const DELETE_SPEED = 55;
+
+  /* Full text kitni der visible rahe */
+  const HOLD_TIME = 1800;
+
+  /* Next role start hone se pehle */
+  const NEXT_ROLE_DELAY = 500;
+
+  function typeRole() {
+    const currentRole = roles[roleIndex];
+
+    /* =====================================
+       TYPING
+    ===================================== */
+
+    if (!isDeleting) {
+      typingRole.textContent = currentRole.substring(0, charIndex + 1);
+
+      charIndex++;
+
+      /*
+       * Pura role type ho gaya
+       */
+      if (charIndex >= currentRole.length) {
+        charIndex = currentRole.length;
+
+        isDeleting = true;
+
+        /*
+         * Full text ko 1.8 sec
+         * screen par visible rakho.
+         */
+        setTimeout(typeRole, HOLD_TIME);
+
+        return;
+      }
+
+      setTimeout(typeRole, TYPE_SPEED);
+
       return;
     }
 
-    setTimeout(typeRole, 90);
-  } else {
-    // Complete text delete
-    typingRole.textContent = currentRole.substring(0, charIndex - 1);
+    /* =====================================
+       DELETING
+    ===================================== */
+
     charIndex--;
 
-    // Completely deleted
-    if (charIndex === 0) {
+    typingRole.textContent = currentRole.substring(0, charIndex);
+
+    /*
+     * Pura role delete ho gaya
+     */
+    if (charIndex <= 0) {
+      charIndex = 0;
+
       isDeleting = false;
 
-      // Next role
+      /*
+       * Next role
+       */
       roleIndex = (roleIndex + 1) % roles.length;
 
-      // Next animation immediately start
-      setTimeout(typeRole, 800);
+      setTimeout(typeRole, NEXT_ROLE_DELAY);
+
       return;
     }
 
-    setTimeout(typeRole, 55);
+    setTimeout(typeRole, DELETE_SPEED);
   }
-}
 
-typeRole();
+  /* =====================================
+     START ANIMATION
+  ===================================== */
+
+  typeRole();
+})();
