@@ -1061,11 +1061,24 @@ footer a {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #typingRole,
-  .typing-cursor,
-  .back-to-top {
-    animation: none;
+/* =========================================
+   VERCEL BLINK FIX — FINAL OVERRIDE
+========================================= */
+.typing-cursor {
+  display: inline-block !important;
+  opacity: 1;
+  animation: cursorBlink 0.7s steps(1, end) infinite !important;
+  will-change: opacity;
+}
+
+@keyframes cursorBlink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
   }
 }
 
