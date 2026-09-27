@@ -1199,11 +1199,7 @@ footer a {
 
   border-color: var(--accent);
 
-  background: linear-gradient(
-    145deg,
-    #14212c,
-    #101820
-  );
+  background: linear-gradient(145deg, #14212c, #101820);
 
   box-shadow:
     0 0 0 1px rgba(97, 218, 251, 0.16),
@@ -1246,3 +1242,67 @@ footer a {
   }
 }
 
+/* =========================================
+   CONTACT CARDS — GLOW EFFECT
+========================================= */
+
+.contact-grid article {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.contact-grid article::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(97, 218, 251, 0.12),
+    transparent 55%
+  );
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  pointer-events: none;
+}
+
+.contact-grid article:hover,
+.contact-grid article:focus-within {
+  transform: translateY(-5px);
+
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 1px rgba(97, 218, 251, 0.15),
+    0 0 18px rgba(97, 218, 251, 0.25),
+    0 0 40px rgba(97, 218, 251, 0.12),
+    0 18px 45px rgba(0, 0, 0, 0.3);
+}
+
+.contact-grid article:hover::before,
+.contact-grid article:focus-within::before {
+  opacity: 1;
+}
+
+.contact-grid article:hover .contact-icon,
+.contact-grid article:focus-within .contact-icon {
+  color: var(--accent);
+
+  border-color: var(--accent);
+
+  background: rgba(97, 218, 251, 0.08);
+
+  box-shadow:
+    0 0 8px rgba(97, 218, 251, 0.3),
+    0 0 18px rgba(97, 218, 251, 0.15);
+}
