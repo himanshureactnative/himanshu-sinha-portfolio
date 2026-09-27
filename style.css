@@ -1254,3 +1254,28 @@ footer a {
     border-color: var(--line);
   }
 }
+/* FINAL VERCEL CURSOR BLINK FIX */
+
+.typing-cursor {
+  display: inline-block !important;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 8px;
+  background: var(--accent);
+  opacity: 1;
+
+  animation: cursorBlink 0.7s steps(1, end) infinite !important;
+  will-change: opacity;
+}
+
+@keyframes cursorBlink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
